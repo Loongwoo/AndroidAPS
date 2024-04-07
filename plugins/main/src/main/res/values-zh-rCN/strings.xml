@@ -3,6 +3,7 @@
     <!-- SMS Communicator & OTP Authenticator -->
     <string name="smscommunicator">SMS短信通讯器</string>
     <string name="smscommunicator_shortname">手机SMS</string>
+    <string name="description_sms_communicator">使用SMS命令远程控制AAPS</string>
     <string name="smscommunicator_code_from_authenticator_for" comment="This is continuation of sentence: To [ACTION] reply with code">从验证码生成器应用获取%1$s的随机码，并附加PIN码</string>
     <string name="smscommunicator_otp_pin">验证码末尾强制附加的PIN码</string>
     <string name="smscommunicator_otp_pin_summary">在每次生成的一次性随机密码末尾，需要记住并强制附加的数字。</string>
@@ -18,6 +19,7 @@
     <string name="smscommunicator_otp_export_prompt">你确定要将OTP密钥复制到剪贴板？\n\n只有在验证器应用扫描二维码出现问题时，你才需要这么做。可能你想手动输入二维码，或者使用专用的应用程序配置硬件OTP令牌。</string>
     <string name="smscommunicator_otp_export_successful">将OTP密钥 (Base32 格式) 导出并复制到剪贴板。粘贴它到身份验证器或硬件OTP中！</string>
     <string name="smscommunicator_otp_step1_install_header">1. 安装身份验证器app</string>
+    <string name="smscommunicator_otp_step2_provisioning_header">2. 扫码设置 AAPS 验证码</string>
     <string name="smscommunicator_otp_step3_test_header">3. 测试一次性验证码</string>
     <string name="smscommunicator_otp_reset_header">重置身份验证器</string>
     <string name="smscommunicator_otp_install_info">在其他遥控手机上安装支持RFC 6238 TOTP令牌协议的应用程序。常用的免费应用有:\n • Authy\n • Google Authenticator\n • LastPass Authenticator\n • FreeOTP Authenticator</string>
@@ -267,6 +269,8 @@
     <string name="buttonson_description">按钮总是显示在屏幕底部</string>
     <string name="largedisplay_description">大显示屏</string>
     <string name="skin">皮肤</string>
+
+    <string name="cannula_usage">使用:</string>
     <!--    Iob-->
     <string name="send_logfiles">发送包括当前时间的今日的日志文件给开发者。描述一下意外情况</string>
     <!--    PersistentNotification-->
