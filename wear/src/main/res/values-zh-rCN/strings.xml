@@ -34,6 +34,8 @@
     <string name="pref_show_phone_battery">显示手机电量</string>
     <string name="pref_show_rig_battery">显示最低电量</string>
     <string name="pref_show_basal_rate">显示基础率</string>
+    <string name="pref_show_temp_target">显示临时目标</string>
+    <string name="pref_show_reservoir_level">显示胰岛素容量</string>
     <string name="pref_show_loop_status">显示闭环状态</string>
     <string name="pref_show_bg">显示血糖线</string>
     <string name="pref_show_bgi">显示血糖影响</string>
@@ -52,6 +54,10 @@
     <string name="pref_3_hours">3 小时</string>
     <string name="pref_4_hours">4 小时</string>
     <string name="pref_5_hours">5 小时</string>
+    <string name="pref_1_min">禁用</string>
+    <string name="pref_5_min">5分钟</string>
+    <string name="pref_10_min">10分钟</string>
+    <string name="pref_15_min">15分钟</string>
     <string name="pref_input_design">输入计划</string>
     <string name="pref_default">默认 </string>
     <string name="pref_quick_righty">快速右对齐</string>
@@ -93,6 +99,7 @@
     <string name="action_duration">时长</string>
     <string name="action_tempt_confirmation">临时目标请求</string>
     <string name="action_quick_wizard_confirmation">快速向导请求</string>
+    <string name="action_user_action_confirmation">用户动作请求</string>
     <string name="action_treatment_confirmation">治疗请求</string>
     <string name="action_bolus_confirmation">大剂量请求</string>
     <string name="action_wizard_confirmation">计算请求</string>
@@ -151,6 +158,8 @@
     <string name="pref_simplify_ui_sum">仅显示时间和血糖</string>
     <string name="pref_vibrate_hourly">按小时振动</string>
     <string name="pref_show_weeknumber">显示星期几</string>
+    <string name="pref_include_external">在模板中包含外部视图</string>
+    <string name="pref_switch_external">在表盘中切换外部数据</string>
     <string name="custom_pref_show_seconds">显示秒数</string>
     <string name="digitalstyle_pref_your_style">您的样式：</string>
     <string name="digitalstyle_style_none">无样式</string>

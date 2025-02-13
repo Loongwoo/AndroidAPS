@@ -89,6 +89,7 @@
     <string name="removerecord">删除记录</string>
     <string name="loopisdisabled">闭环被禁用</string>
     <string name="alarm">报警</string>
+    <string name="exportsettings">导出设置</string>
     <string name="disableloop">禁用闭环</string>
     <string name="enableloop">启用闭环</string>
     <string name="resumeloop">恢复闭环</string>
@@ -113,6 +114,7 @@
     <string name="bg_label">血糖</string>
     <string name="calibration">校准</string>
     <string name="alarminxmin">在 %1$d 分钟内运行提醒</string>
+    <string name="treatmentdeliveryerror">输注错误，请手动检查实际输入胰岛素和碳水化合物量。</string>
     <string name="bolus_reminder">大剂量提醒</string>
     <string name="duration_label">持续时间</string>
     <string name="shortgramm">克</string>
@@ -170,6 +172,8 @@
     <string name="loopstatus_targets">目标：</string>
     <string name="loopstatus_OAPS_result">OAPS结果：</string>
     <!--    Protection-->
+    <string name="nav_export">导出设置</string>
+    <string name="location_permission_not_granted">地理位置未授权，请在手机设置中允许。</string>
     <string name="wrongpassword">密码错误</string>
     <string name="wrongpin">PIN 码错误</string>
     <string name="passwords_dont_match">密码不匹配</string>
@@ -199,10 +203,12 @@
     <string name="careportal_bgcheck">指血检查</string>
     <string name="careportal_mbg">指血BG 或 校准</string>
     <string name="careportal_announcement">通告</string>
+    <string name="careportal_settings_export">导出配置</string>
     <string name="careportal_note">备注</string>
     <string name="careportal_question">问题</string>
     <string name="careportal_exercise">运动</string>
     <string name="careportal_announcement_message">公告: %1$s</string>
+    <string name="careportal_settings_export_message">导出 : %1$s</string>
     <string name="careportal_note_message">备注： %1$s</string>
     <string name="careportal_question_message">问题 : %1$s</string>
     <string name="careportal_exercise_message">运动 : %1$s</string>
@@ -235,6 +241,7 @@
     <string name="activity">活动</string>
     <string name="wear">手表</string>
     <string name="automation">自动操作</string>
+    <string name="settingsexport">导出配置</string>
     <string name="custom">自定义</string>
     <string name="loop">闭环</string>
     <string name="ns">NS</string>
@@ -336,7 +343,9 @@
     <string name="delete_future_treatments">删除未来的治疗</string>
     <string name="uel_export_settings">导出设置</string>
     <string name="uel_import_settings">导入设置</string>
+    <string name="uel_select_directory">选择目录</string>
     <string name="uel_reset_databases">重置数据库</string>
+    <string name="uel_reset_aps_results">重置APS结果</string>
     <string name="uel_cleanup_databases">清空数据库</string>
     <string name="uel_export_databases">导出数据库</string>
     <string name="uel_import_databases">导入数据库</string>
@@ -398,38 +407,16 @@
     <string name="formatPercent">%1$.0f%%</string>
     <string name="basal">基础率</string>
     <string name="basalpct">基础率 %</string>
+    <string name="sensitivity">灵敏度</string>
+    <string name="isf_for_carbs">计算器和碳水化合物吸收的ISF：%1$.1f</string>
+    <string name="autosens_long">自动灵敏度: %.0f%%</string>
+    <string name="algorithm_long">算法自动灵敏度: %.0f%%</string>
     <string name="a11y_file">文件</string>
     <string name="a11y_user">用户</string>
     <!-- Autotune -->
     <string name="autotune">自动调整</string>
     <string name="autotune_tune_days">调整天数</string>
     <string name="autotune_select_profile">选择配置文件去协调</string>
-    <string name="autotune_ic_warning">选定的配置文件包含 %1$d 个 IC 值。自动调整将使用 %2$.2f g/U</string>
-    <string name="autotune_isf_warning">选定的配置文件包含 %1$d 个 ISF 值。自动调节将使用 %2$.1f %3$s/U</string>
-    <string name="autotune_error">输入数据错误，尝试再次运行自动调谐或减少天数</string>
-    <string name="autotune_error_more_days">输入数据错误，增加天数</string>
-    <string name="autotune_warning_during_run">自动协调计算开始，请耐心等待</string>
-    <string name="autotune_warning_after_run">使用前请仔细检查结果！</string>
-    <string name="autotune_partial_result">部分结果天数 %1$d / %2$d 已调整</string>
-    <string name="autotune_result">结果: %1$s</string>
-    <string name="autotune_param">参数</string>
-    <string name="autotune_percent">%</string>
-    <string name="autotune_missing">缺失</string>
-    <string name="autotune_profile_name">自动协调配置文件 %1$s</string>
-    <string name="autotune_run">运行自动协调</string>
-    <string name="autotune_check_input_profile_button">检查输入配置</string>
-    <string name="autotune_compare_profile">比较配置文件</string>
-    <string name="autotune_copy_localprofile_button">复制到本地配置文件</string>
-    <string name="autotune_update_input_profile_button">更新输入配置文件</string>
-    <string name="autotune_revert_input_profile_button">检查输入配置</string>
-    <string name="autotune_copy_local_profile_message">从此 Autotune 配置文件创建新的本地配置文件？</string>
-    <string name="autotune_update_local_profile_message">用 Autotune 配置文件更新 %1$s 配置文件？</string>
-    <string name="autotune_revert_local_profile_message">使用输入配置文件还原 %1$s 配置文件？</string>
-    <string name="autotune_profile_invalid">配置文件无效</string>
-    <string name="autotune_run_without_autoswitch">无配置文件切换 Autotune 运行</string>
-    <string name="autotune_run_with_autoswitch">自动切换配置文件 Autotune 运行</string>
-    <string name="autotune_run_with_error">上次 Autotune 运行期间出错</string>
-    <string name="autotune_run_cancelled">检测到另一次自动调试运行，本次运行已取消</string>
     <!-- Alerts -->
     <string name="raise_notifications_as_android_notifications">对警报和通知使用系统通知音</string>
     <string name="urgent_alarm">紧急报警</string>
@@ -523,7 +510,19 @@
     <!-- TwoMessagesDialog -->
     <string name="password_preferences_decrypt_prompt">请您输入主密码，该密码将用于解密导入的首选项配置。</string>
     <!-- <unattended_export> -->
+    <string name="export_ok">好的</string>
+    <string name="export_warning">警告</string>
+    <string name="export_expired">失效</string>
+    <string name="export_disabled">禁用</string>
+    <string name="export_failed">失败</string>
+    <string name="export_alert">警报</string>
+
     <!-- <unattended_export result messages> -->
+    <string name="export_result_message_exported">配置已导出！</string>
+    <string name="export_result_message_failed">配置导出失败！</string>
+    <string name="export_result_message_about_to_expire">配置已导出：密码即将失效，请手动导出并设置密码。</string>
+    <string name="export_result_message_expired">配置已取消导出：密码已失效，请手动导出！</string>
+    <string name="export_result_message_disabled">警告（自动化）：未开启导出配置！</string>
     <!-- NumberPicker -->
     <string name="a11y_min_button_description">将%1$s 减少 %2$s</string>
     <string name="a11y_plus_button_description">将%1$s 增加 %2$s</string>
@@ -564,6 +563,7 @@
     <string name="cleanup_db_confirm_sync">是否要清理数据库？\n它将删除跟踪的更改和超过 3 个月的历史数据。\n这样做将显着加快完全同步速度。</string>
     <string name="cleared_entries">已清除的条目</string>
     <!--    Weekday-->
+    <string name="weekday_sunday_short">星期日</string>
     <string name="weekday_saturday_short">星期六</string>
     <string name="weekday_friday_short">星期五</string>
     <string name="weekday_thursday_short">星期四</string>
@@ -579,4 +579,8 @@
     <string name="saturday_short">周六</string>
     <string name="sunday_short">周日</string>
     <!--    DecimalFormatterImpl -->
+    <string name="percent_rate_duration">比率: %1$.2f%% (%2$.2f U/h) 时间: %3$d 分钟</string>
+    <string name="rate_percent_duration">比率: %1$.2f U/h (%2$.2f%%) 时间: %3$d 分钟</string>
+    <string name="percent_rate_duration_formatted"><![CDATA[<b>比率</b>: %1$.2f%% (%2$.2f U/h)<br><b>时间</b>: %3$d 分钟<br>]]></string>
+    <string name="rate_percent_duration_formatted"><![CDATA[<b>比率</b>: %1$.2f U/h (%2$.2f%%) <br><b>时间</b>: %3$d 分钟<br>]]></string>
 </resources>
