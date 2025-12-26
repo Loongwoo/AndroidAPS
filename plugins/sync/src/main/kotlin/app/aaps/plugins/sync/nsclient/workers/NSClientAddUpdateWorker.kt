@@ -158,7 +158,7 @@ class NSClientAddUpdateWorker(
                     }
             }
         }
-        storeDataForDb.storeTreatmentsToDb(fullSync = false)
+        storeDataForDb.storeTreatmentsToDb()
         activePlugin.activeNsClient?.updateLatestTreatmentReceivedIfNewer(latestDateInReceivedData)
         return ret
     }

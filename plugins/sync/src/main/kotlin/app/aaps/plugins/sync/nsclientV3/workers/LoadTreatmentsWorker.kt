@@ -86,7 +86,7 @@ class LoadTreatmentsWorker(
             return Result.failure(workDataOf("Error" to error.localizedMessage))
         }
 
-        storeDataForDb.storeTreatmentsToDb(fullSync = nsClientV3Plugin.doingFullSync)
+        storeDataForDb.storeTreatmentsToDb()
         nsClientV3Plugin.lastOperationError = null
         return Result.success()
     }

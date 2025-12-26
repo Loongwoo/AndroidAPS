@@ -96,8 +96,7 @@ class StoreDataForDbImpl @Inject constructor(
     private val durationUpdated = HashMap<String, Long>()
     private val ended = HashMap<String, Long>()
 
-    private val pause = 3000L // to slow down db operations
-    private val chunk = 500
+    private val pause = 1000L // to slow down db operations
 
     fun <T> HashMap<T, Long>.inc(key: T) =
         synchronized(this) {
@@ -109,29 +108,28 @@ class StoreDataForDbImpl @Inject constructor(
     override fun storeGlucoseValuesToDb() {
         synchronized(glucoseValues) {
             if (glucoseValues.isNotEmpty()) {
-                glucoseValues.chunked(chunk).forEach {
-                    persistenceLayer.insertCgmSourceData(Sources.NSClient, it.toMutableList(), emptyList(), null)
-                        .blockingGet()
-                        .also { result ->
-                            result.updated.forEach {
-                                nsClientSource.detectSource(it)
-                                updated.inc(GV::class.java.simpleName)
-                            }
-                            result.inserted.forEach {
-                                nsClientSource.detectSource(it)
-                                inserted.inc(GV::class.java.simpleName)
-                            }
-                            result.updatedNsId.forEach {
-                                nsClientSource.detectSource(it)
-                                nsIdUpdated.inc(GV::class.java.simpleName)
-                            }
-                            sendLog("GlucoseValue", GV::class.java.simpleName)
+                persistenceLayer.insertCgmSourceData(Sources.NSClient, glucoseValues.toMutableList(), emptyList(), null)
+                    .blockingGet()
+                    .also { result ->
+                        glucoseValues.clear()
+                        result.updated.forEach {
+                            nsClientSource.detectSource(it)
+                            updated.inc(GV::class.java.simpleName)
                         }
-                    SystemClock.sleep(pause)
-                }
+                        result.inserted.forEach {
+                            nsClientSource.detectSource(it)
+                            inserted.inc(GV::class.java.simpleName)
+                        }
+                        result.updatedNsId.forEach {
+                            nsClientSource.detectSource(it)
+                            nsIdUpdated.inc(GV::class.java.simpleName)
+                        }
+                        sendLog("GlucoseValue", GV::class.java.simpleName)
+                    }
                 glucoseValues.clear()
             }
         }
+        SystemClock.sleep(pause)
         rxBus.send(EventNSClientNewLog("● DONE PROCESSING BG", ""))
     }
 
@@ -153,129 +151,121 @@ class StoreDataForDbImpl @Inject constructor(
         rxBus.send(EventNSClientNewLog("● DONE PROCESSING FOOD", ""))
     }
 
-    override fun storeTreatmentsToDb(fullSync: Boolean) {
+    override fun storeTreatmentsToDb() {
         synchronized(boluses) {
             if (boluses.isNotEmpty()) {
-                boluses.chunked(chunk).forEach {
-                    disposable += persistenceLayer.syncNsBolus(it.toMutableList(), doLog = !fullSync)
-                        .subscribeBy { result ->
-                            repeat(result.inserted.size) { inserted.inc(BS::class.java.simpleName) }
-                            repeat(result.invalidated.size) { invalidated.inc(BS::class.java.simpleName) }
-                            repeat(result.updatedNsId.size) { nsIdUpdated.inc(BS::class.java.simpleName) }
-                            repeat(result.updated.size) { updated.inc(BS::class.java.simpleName) }
-                            sendLog("Bolus", BS::class.java.simpleName)
-                        }
-                    SystemClock.sleep(pause)
-                }
+                disposable += persistenceLayer.syncNsBolus(boluses.toMutableList())
+                    .subscribeBy { result ->
+                        repeat(result.inserted.size) { inserted.inc(BS::class.java.simpleName) }
+                        repeat(result.invalidated.size) { invalidated.inc(BS::class.java.simpleName) }
+                        repeat(result.updatedNsId.size) { nsIdUpdated.inc(BS::class.java.simpleName) }
+                        repeat(result.updated.size) { updated.inc(BS::class.java.simpleName) }
+                        sendLog("Bolus", BS::class.java.simpleName)
+                    }
                 boluses.clear()
             }
         }
 
+        SystemClock.sleep(pause)
+
         synchronized(carbs) {
             if (carbs.isNotEmpty()) {
-                carbs.chunked(chunk).forEach {
-                    disposable += persistenceLayer.syncNsCarbs(it.toMutableList(), doLog = !fullSync)
-                        .subscribeBy { result ->
-                            repeat(result.inserted.size) { inserted.inc(CA::class.java.simpleName) }
-                            repeat(result.invalidated.size) { invalidated.inc(CA::class.java.simpleName) }
-                            repeat(result.updated.size) { updated.inc(CA::class.java.simpleName) }
-                            repeat(result.updatedNsId.size) { nsIdUpdated.inc(CA::class.java.simpleName) }
-                            sendLog("Carbs", CA::class.java.simpleName)
-                        }
-                    SystemClock.sleep(pause)
-                }
+                disposable += persistenceLayer.syncNsCarbs(carbs.toMutableList())
+                    .subscribeBy { result ->
+                        repeat(result.inserted.size) { inserted.inc(CA::class.java.simpleName) }
+                        repeat(result.invalidated.size) { invalidated.inc(CA::class.java.simpleName) }
+                        repeat(result.updated.size) { updated.inc(CA::class.java.simpleName) }
+                        repeat(result.updatedNsId.size) { nsIdUpdated.inc(CA::class.java.simpleName) }
+                        sendLog("Carbs", CA::class.java.simpleName)
+                    }
                 carbs.clear()
             }
         }
 
+        SystemClock.sleep(pause)
+
         synchronized(temporaryTargets) {
             if (temporaryTargets.isNotEmpty()) {
-                temporaryTargets.chunked(chunk).forEach {
-                    disposable += persistenceLayer.syncNsTemporaryTargets(it.toMutableList(), doLog = !fullSync)
-                        .subscribeBy { result ->
-                            repeat(result.inserted.size) { inserted.inc(TT::class.java.simpleName) }
-                            repeat(result.invalidated.size) { invalidated.inc(TT::class.java.simpleName) }
-                            repeat(result.ended.size) { ended.inc(TT::class.java.simpleName) }
-                            repeat(result.updatedNsId.size) { nsIdUpdated.inc(TT::class.java.simpleName) }
-                            repeat(result.updatedDuration.size) { durationUpdated.inc(TT::class.java.simpleName) }
-                            sendLog("TemporaryTarget", TT::class.java.simpleName)
-                        }
-                    SystemClock.sleep(pause)
-                }
+                disposable += persistenceLayer.syncNsTemporaryTargets(temporaryTargets.toMutableList())
+                    .subscribeBy { result ->
+                        repeat(result.inserted.size) { inserted.inc(TT::class.java.simpleName) }
+                        repeat(result.invalidated.size) { invalidated.inc(TT::class.java.simpleName) }
+                        repeat(result.ended.size) { ended.inc(TT::class.java.simpleName) }
+                        repeat(result.updatedNsId.size) { nsIdUpdated.inc(TT::class.java.simpleName) }
+                        repeat(result.updatedDuration.size) { durationUpdated.inc(TT::class.java.simpleName) }
+                        sendLog("TemporaryTarget", TT::class.java.simpleName)
+                    }
                 temporaryTargets.clear()
             }
         }
 
+        SystemClock.sleep(pause)
+
         synchronized(temporaryBasals) {
             if (temporaryBasals.isNotEmpty()) {
-                temporaryBasals.chunked(chunk).forEach {
-                    disposable += persistenceLayer.syncNsTemporaryBasals(it.toMutableList(), doLog = !fullSync)
-                        .subscribeBy { result ->
-                            repeat(result.inserted.size) { inserted.inc(TB::class.java.simpleName) }
-                            repeat(result.invalidated.size) { invalidated.inc(TB::class.java.simpleName) }
-                            repeat(result.ended.size) { ended.inc(TB::class.java.simpleName) }
-                            repeat(result.updatedNsId.size) { nsIdUpdated.inc(TB::class.java.simpleName) }
-                            repeat(result.updatedDuration.size) { durationUpdated.inc(TB::class.java.simpleName) }
-                            sendLog("TemporaryBasal", TB::class.java.simpleName)
-                        }
-                    SystemClock.sleep(pause)
-                }
+                disposable += persistenceLayer.syncNsTemporaryBasals(temporaryBasals.toMutableList())
+                    .subscribeBy { result ->
+                        repeat(result.inserted.size) { inserted.inc(TB::class.java.simpleName) }
+                        repeat(result.invalidated.size) { invalidated.inc(TB::class.java.simpleName) }
+                        repeat(result.ended.size) { ended.inc(TB::class.java.simpleName) }
+                        repeat(result.updatedNsId.size) { nsIdUpdated.inc(TB::class.java.simpleName) }
+                        repeat(result.updatedDuration.size) { durationUpdated.inc(TB::class.java.simpleName) }
+                        sendLog("TemporaryBasal", TB::class.java.simpleName)
+                    }
                 temporaryBasals.clear()
             }
         }
 
+        SystemClock.sleep(pause)
+
         synchronized(effectiveProfileSwitches) {
             if (effectiveProfileSwitches.isNotEmpty()) {
-                effectiveProfileSwitches.chunked(chunk).forEach {
-                    disposable += persistenceLayer.syncNsEffectiveProfileSwitches(it.toMutableList(), doLog = !fullSync)
-                        .subscribeBy { result ->
-                            repeat(result.inserted.size) { inserted.inc(EPS::class.java.simpleName) }
-                            repeat(result.invalidated.size) { invalidated.inc(EPS::class.java.simpleName) }
-                            repeat(result.updatedNsId.size) { nsIdUpdated.inc(EPS::class.java.simpleName) }
-                            sendLog("EffectiveProfileSwitch", EPS::class.java.simpleName)
-                        }
-                    SystemClock.sleep(pause)
-                }
+                disposable += persistenceLayer.syncNsEffectiveProfileSwitches(effectiveProfileSwitches.toMutableList())
+                    .subscribeBy { result ->
+                        repeat(result.inserted.size) { inserted.inc(EPS::class.java.simpleName) }
+                        repeat(result.invalidated.size) { invalidated.inc(EPS::class.java.simpleName) }
+                        repeat(result.updatedNsId.size) { nsIdUpdated.inc(EPS::class.java.simpleName) }
+                        sendLog("EffectiveProfileSwitch", EPS::class.java.simpleName)
+                    }
                 effectiveProfileSwitches.clear()
             }
         }
 
+        SystemClock.sleep(pause)
+
         synchronized(profileSwitches) {
             if (profileSwitches.isNotEmpty()) {
-                profileSwitches.chunked(chunk).forEach {
-                disposable += persistenceLayer.syncNsProfileSwitches(it.toMutableList(), doLog = !fullSync)
+                disposable += persistenceLayer.syncNsProfileSwitches(profileSwitches.toMutableList())
                     .subscribeBy { result ->
                         repeat(result.inserted.size) { inserted.inc(PS::class.java.simpleName) }
                         repeat(result.invalidated.size) { invalidated.inc(PS::class.java.simpleName) }
                         repeat(result.updatedNsId.size) { nsIdUpdated.inc(PS::class.java.simpleName) }
                         sendLog("ProfileSwitch", PS::class.java.simpleName)
                     }
-                    SystemClock.sleep(pause)
-                }
                 profileSwitches.clear()
             }
         }
 
+        SystemClock.sleep(pause)
+
         synchronized(bolusCalculatorResults) {
             if (bolusCalculatorResults.isNotEmpty()) {
-                bolusCalculatorResults.chunked(chunk).forEach {
-                disposable += persistenceLayer.syncNsBolusCalculatorResults(it.toMutableList())
+                disposable += persistenceLayer.syncNsBolusCalculatorResults(bolusCalculatorResults.toMutableList())
                     .subscribeBy { result ->
                         repeat(result.inserted.size) { inserted.inc(BCR::class.java.simpleName) }
                         repeat(result.invalidated.size) { invalidated.inc(BCR::class.java.simpleName) }
                         repeat(result.updatedNsId.size) { nsIdUpdated.inc(BCR::class.java.simpleName) }
                         sendLog("BolusCalculatorResult", BCR::class.java.simpleName)
                     }
-                    SystemClock.sleep(pause)
-                }
                 bolusCalculatorResults.clear()
             }
         }
 
+        SystemClock.sleep(pause)
+
         synchronized(therapyEvents) {
             if (therapyEvents.isNotEmpty()) {
-                therapyEvents.chunked(chunk).forEach {
-                disposable += persistenceLayer.syncNsTherapyEvents(it.toMutableList(), doLog = !fullSync)
+                disposable += persistenceLayer.syncNsTherapyEvents(therapyEvents.toMutableList())
                     .subscribeBy { result ->
                         repeat(result.inserted.size) { inserted.inc(TE::class.java.simpleName) }
                         repeat(result.invalidated.size) { invalidated.inc(TE::class.java.simpleName) }
@@ -283,16 +273,15 @@ class StoreDataForDbImpl @Inject constructor(
                         repeat(result.updatedDuration.size) { durationUpdated.inc(TE::class.java.simpleName) }
                         sendLog("TherapyEvent", TE::class.java.simpleName)
                     }
-                    SystemClock.sleep(pause)
-                }
                 therapyEvents.clear()
             }
         }
 
+        SystemClock.sleep(pause)
+
         synchronized(offlineEvents) {
             if (offlineEvents.isNotEmpty()) {
-                offlineEvents.chunked(chunk).forEach {
-                disposable += persistenceLayer.syncNsOfflineEvents(it.toMutableList(), doLog = !fullSync)
+                disposable += persistenceLayer.syncNsOfflineEvents(offlineEvents.toMutableList())
                     .subscribeBy { result ->
                         repeat(result.inserted.size) { inserted.inc(OE::class.java.simpleName) }
                         repeat(result.invalidated.size) { invalidated.inc(OE::class.java.simpleName) }
@@ -301,16 +290,15 @@ class StoreDataForDbImpl @Inject constructor(
                         repeat(result.updatedDuration.size) { durationUpdated.inc(OE::class.java.simpleName) }
                         sendLog("OfflineEvent", OE::class.java.simpleName)
                     }
-                    SystemClock.sleep(pause)
-                }
                 offlineEvents.clear()
             }
         }
 
+        SystemClock.sleep(pause)
+
         synchronized(extendedBoluses) {
             if (extendedBoluses.isNotEmpty()) {
-                extendedBoluses.chunked(chunk).forEach {
-                disposable += persistenceLayer.syncNsExtendedBoluses(it.toMutableList(), doLog = !fullSync)
+                disposable += persistenceLayer.syncNsExtendedBoluses(extendedBoluses.toMutableList())
                     .subscribeBy { result ->
                         result.inserted.forEach {
                             if (it.isEmulatingTempBasal) virtualPump.fakeDataDetected = true
@@ -322,16 +310,13 @@ class StoreDataForDbImpl @Inject constructor(
                         repeat(result.updatedDuration.size) { durationUpdated.inc(EB::class.java.simpleName) }
                         sendLog("ExtendedBolus", EB::class.java.simpleName)
                     }
-                    SystemClock.sleep(pause)
-                }
                 extendedBoluses.clear()
             }
         }
 
-        userEntries.chunked(chunk).forEach {
-            uel.log(it)
-            SystemClock.sleep(pause)
-        }
+        SystemClock.sleep(pause)
+
+        uel.log(userEntries)
         rxBus.send(EventNSClientNewLog("● DONE PROCESSING TR", ""))
     }
 

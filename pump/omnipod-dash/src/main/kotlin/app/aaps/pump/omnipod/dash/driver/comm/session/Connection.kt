@@ -71,15 +71,13 @@ class Connection(
         podState.connectionAttempts++
         podState.bluetoothConnectionState = OmnipodDashPodStateManager.BluetoothConnectionState.CONNECTING
         val autoConnect = false
-        var gatt = gattConnection
+        val gatt = gattConnection ?: podDevice.connectGatt(context, autoConnect, bleCommCallbacks, BluetoothDevice.TRANSPORT_LE)
+        gattConnection = gatt
         if (gatt == null) {
-            gatt = podDevice.connectGatt(context, autoConnect, bleCommCallbacks, BluetoothDevice.TRANSPORT_LE)
-            if (gatt == null) {
-                Thread.sleep(SLEEP_WHEN_FAILING_TO_CONNECT_GATT) // Do not retry too often
-                throw FailedToConnectException("connectGatt() returned null")
-            }
-            gattConnection = gatt
-        } else if (!gatt.connect()) {
+            Thread.sleep(SLEEP_WHEN_FAILING_TO_CONNECT_GATT) // Do not retry too often
+            throw FailedToConnectException("connectGatt() returned null")
+        }
+        if (!gatt.connect()) {
             throw FailedToConnectException("connect() returned false")
         }
         val before = SystemClock.elapsedRealtime()

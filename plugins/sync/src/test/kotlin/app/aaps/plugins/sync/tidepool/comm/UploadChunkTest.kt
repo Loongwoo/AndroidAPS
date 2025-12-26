@@ -28,14 +28,8 @@ class UploadChunkTest {
     @Mock lateinit var sp: SP
     @Mock lateinit var rxBus: RxBus
     @Mock lateinit var aapsLogger: AAPSLogger
-
-    @Suppress("unused")
     @Mock lateinit var profileFunction: ProfileFunction
-
-    @Suppress("unused")
     @Mock lateinit var profileUtil: ProfileUtil
-
-    @Suppress("unused")
     @Mock lateinit var activePlugin: ActivePlugin
     @Mock lateinit var persistenceLayer: PersistenceLayer
     @Mock lateinit var dateUtil: DateUtil

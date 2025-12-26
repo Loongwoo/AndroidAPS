@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.AnimationDrawable
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
@@ -77,8 +76,6 @@ class ConfigBuilderPlugin @Inject constructor(
         .description(R.string.description_config_builder),
     aapsLogger, rh
 ), ConfigBuilder {
-
-    private var expandAnimation: AnimationDrawable? = null
 
     override fun initialize() {
         loadSettings()
@@ -270,14 +267,9 @@ class ConfigBuilderPlugin @Inject constructor(
         else layout.categoryTitle.visibility = View.GONE
         layout.categoryVisibility.visibility = preferences.simpleMode.not().toVisibility()
         layout.categoryDescription.text = rh.gs(description)
-        expandAnimation = layout.categoryExpandMore.background as AnimationDrawable?
-        expandAnimation?.setEnterFadeDuration(200)
-        expandAnimation?.setExitFadeDuration(200)
-        if (expandAnimation?.isRunning == false)
-            expandAnimation?.start()
         layout.categoryExpandLess.setOnClickListener {
             layout.categoryExpandLess.visibility = false.toVisibility()
-            layout.categoryExpandMore.visibility = (plugins.size > 1).toVisibility()
+            layout.categoryExpandMore.visibility = true.toVisibility()
             pluginsAdded.forEach { pluginViewHolder ->
                 pluginViewHolder.layout.root.visibility = pluginViewHolder.plugin.isEnabled().toVisibility()
             }
